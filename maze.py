@@ -76,7 +76,7 @@ class maze:  # creates a random maze
 
         return wallList
 
-    # takes in a maze with all walls on and turns off some walls in such a
+    # Takes in a maze with all walls on and turns off some walls in such a
     # way that every cell has one path to any other cell
     def createRandom(self):
         # convert cell position into a single number by width*y+x

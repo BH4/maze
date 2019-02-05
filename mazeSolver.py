@@ -1,9 +1,19 @@
 
 class mazeSolver:
     def __init__(self, maze):
-        self.visited = []
-        self.solution = []
+        """
+        In addition to each solution method returning a path from the beginning
+        to the end I want them to keep track of all the nodes they have visited
+        in the course of solving the maze. In the future I would like to create
+        gifs of the solution algorithms so the visited nodes should be in order
+        """
+        self.reset()
         self.maze = maze
+
+    def reset(self):
+        self.visited_path = []
+        self.visited = set()
+        self.solution = []
 
     def cellsConnected(self, pos1, pos2):
         if pos1 == pos2:
@@ -45,43 +55,47 @@ class mazeSolver:
         return N
 
     def depthFirstSearch(self, start, end):
-        stack = [start]
-        path = []
-        visited = [start]
+        self.visited_path.append(start)
+        self.visited.add(start)
 
-        curr = start
-        while len(stack) > 0 and curr != end:
-            curr = stack.pop(-1)
+        if start == end:
+            self.solution = [end]
+            return True
 
-            stack.extend(self.cellNeighbors(curr))
-            path.append[curr]
+        neighbors = self.cellNeighbors(start)
+        for n in neighbors:
+            if n not in self.visited:
+                solved = self.depthFirstSearch(n, end)
+                if solved:
+                    self.solution = [start]+self.solution
+                    return True
 
-        return None
+        return False
 
     def breadthFirstSearch(self, start, end):
         queue = []
-        visited = []
+        self.visited_path = []
+        self.visited = set()
 
         # push first path
         queue.append([start])
         while len(queue) > 0:
             path = queue.pop(0)
             curr = path[-1]
-            visited.append(curr)
+            self.visited_path.append(curr)
+            self.visited.add(curr)
 
             if curr == end:
                 self.solution = path
-                self.visited = visited
                 return None
 
-            neigh = self.cellNeighbors(curr)
-            for n in neigh:
-                if n not in visited:
+            neighbors = self.cellNeighbors(curr)
+            for n in neighbors:
+                if n not in self.visited:
                     new_path = list(path)
                     new_path.append(n)
                     queue.append(new_path)
 
-        # as long as a solution exists this should never run
         return None
 
     def aStar(self, start, end):

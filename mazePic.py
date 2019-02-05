@@ -3,12 +3,15 @@ from PIL import Image
 
 class mazePic:
     def __init__(self, maze):
-        # cant change this yet everything is written so that it moves correctly but the walls are still only 1 thick
+        self.maze = maze
+
+        # Cant change this yet everything is written so that it moves correctly
+        # but the walls are still only 1 thick
         self.wallThickness = 1
 
         # desired image max(width,height)
         desired = 500
-        m = max(maze.width,maze.height)
+        m = max(maze.width, maze.height)
         desired -= (m+1)*self.wallThickness
 
         self.cellSize = int(desired/m)
@@ -78,14 +81,14 @@ class mazePic:
 
     # given two cells find the coordinates of the wall between them
     def findWall(self, pos1, pos2):
-        if pos1==pos2:
-            print('same point')
+        if pos1 == pos2:
+            print('Same point')
             return None
 
         dx = pos1[0]-pos2[0]
         dy = pos1[1]-pos2[1]
         if abs(dx)+abs(dy) > 1:
-            print('not connected')
+            print('Not connected')
             return None
 
         # at this point either (dx=+1 or -1 and dy=0) or (dy=+1 or -1 and dx=0)
@@ -95,7 +98,7 @@ class mazePic:
             wVorH = 1
 
             x = pos1[0]
-            y = max(pos1[1],pos2[1])
+            y = max(pos1[1], pos2[1])
         if dy == 0:  # vertical
             wVorH = 0
 
@@ -114,12 +117,24 @@ class mazePic:
 
     # fill squre with color
     def fill(self, coord, color):
-        (x, y) = self.corner(coord)
+        (c_x, c_y) = self.corner(coord)
 
         for i in range(self.cellSize):
             for j in range(self.cellSize):
-                self.pix[x+i, y+j] = color
+                self.pix[c_x+i, c_y+j] = color
 
+        x, y = coord
+        # Color the empty walls
+        if self.maze.walls[0][x][y] == 0:
+            self.coloredWall((0, x, y), color)
+        if self.maze.walls[0][x+1][y] == 0:
+            self.coloredWall((0, x+1, y), color)
+        if self.maze.walls[1][x][y] == 0:
+            self.coloredWall((1, x, y), color)
+        if self.maze.walls[1][x][y+1] == 0:
+            self.coloredWall((1, x, y+1), color)
+
+    """
     # color cells in specified color given in RGB format
     def solution(self, path, color):
         # path is list of coordinates
@@ -133,3 +148,10 @@ class mazePic:
             self.fill(cell, color)
 
             last = cell
+    """
+
+    def listFill(self, path, color):
+        # path is list of coordinates
+
+        for cell in path:
+            self.fill(cell, color)
