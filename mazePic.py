@@ -134,22 +134,6 @@ class mazePic:
         if self.maze.walls[1][x][y+1] == 0:
             self.coloredWall((1, x, y+1), color)
 
-    """
-    # color cells in specified color given in RGB format
-    def solution(self, path, color):
-        # path is list of coordinates
-        last = None
-        for cell in path:
-            # need to fill the space between the walls. Assumes path is in order
-            if last is not None:
-                wall = self.findWall(cell, last)
-                self.coloredWall(wall, color)
-
-            self.fill(cell, color)
-
-            last = cell
-    """
-
     def listFill(self, path, color):
         # path is list of coordinates
 

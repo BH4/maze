@@ -1,3 +1,15 @@
+from bisect import bisect
+
+
+def getPath(cameFrom, end):
+    path = []
+    curr = end
+    while curr is not None:
+        path = [curr] + path
+        curr = cameFrom[curr]
+
+    return path
+
 
 class mazeSolver:
     def __init__(self, maze):
@@ -73,30 +85,74 @@ class mazeSolver:
         return False
 
     def breadthFirstSearch(self, start, end):
-        queue = []
-        self.visited_path = []
-        self.visited = set()
+        queue = [start]
 
-        # push first path
-        queue.append([start])
+        cameFrom = dict()
+        cameFrom[start] = None
+        self.visited_path = [start]
+        self.visited = set([start])
+
         while len(queue) > 0:
-            path = queue.pop(0)
-            curr = path[-1]
-            self.visited_path.append(curr)
-            self.visited.add(curr)
+            curr = queue.pop(0)
 
             if curr == end:
-                self.solution = path
+                self.solution = getPath(cameFrom, end)
                 return None
 
             neighbors = self.cellNeighbors(curr)
             for n in neighbors:
                 if n not in self.visited:
-                    new_path = list(path)
-                    new_path.append(n)
-                    queue.append(new_path)
+                    self.visited_path.append(n)
+                    self.visited.add(n)
+                    cameFrom[n] = curr
+
+                    queue.append(n)
 
         return None
 
+    def heuristic(self, n, end):
+        return abs(end[0]-n[0])+abs(end[1]-n[1])
+
     def aStar(self, start, end):
+
+        # fScore is the total estimated distance of passing through this node.
+        # This array will be kept in sorted order and updated with openNodes
+        # so that they remain in the same order.
+        fScore = [self.heuristic(start, end)]
+        openNodes = [start]
+
+        # gScore is the actual distance from the start node.
+        gScore = dict()
+        gScore[start] = 0
+
+        cameFrom = dict()
+        cameFrom[start] = None
+        self.visited_path = [start]
+        self.visited = set([start])
+
+        while len(openNodes) > 0:
+            print(fScore)
+            curr = openNodes.pop(0)
+            fScore.pop(0)
+
+            if curr == end:
+                self.solution = getPath(cameFrom, end)
+                return None
+
+            neighbors = self.cellNeighbors(curr)
+            for n in neighbors:
+                if n not in self.visited:
+                    self.visited_path.append(n)
+                    self.visited.add(n)
+                    cameFrom[n] = curr
+
+                    gScore[n] = gScore[curr]+1
+                    f = gScore[n]+self.heuristic(n, end)
+                    ind = bisect(fScore, f)
+
+                    # Insert node and its fScore
+                    fScore = fScore[:ind]+[f]+fScore[ind:]
+                    openNodes = openNodes[:ind]+[n]+openNodes[ind:]
+
+
         return None

@@ -9,8 +9,8 @@ if __name__ == '__main__':
     small_maze = maze(size, size)
     solver = mazeSolver(small_maze)
 
-    names = ['Breadth First Search', 'Depth First Search']
-    methods = [solver.breadthFirstSearch, solver.depthFirstSearch]
+    names = ['Breadth First Search', 'Depth First Search', 'A Star']
+    methods = [solver.breadthFirstSearch, solver.depthFirstSearch, solver.aStar]
 
     for i, search in enumerate(methods):
         # draw the walls of the maze
