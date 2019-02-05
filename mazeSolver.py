@@ -131,7 +131,6 @@ class mazeSolver:
         self.visited = set([start])
 
         while len(openNodes) > 0:
-            print(fScore)
             curr = openNodes.pop(0)
             fScore.pop(0)
 
